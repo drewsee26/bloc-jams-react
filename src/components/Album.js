@@ -13,11 +13,26 @@ class Album extends Component {
         this.state = {
             album: album,
             currentSong: album.songs[0],
-            isPlaying: false
+            currentTime: 0,
+            duration: album.songs[0].duration,
+            isPlaying: false,
         }
 
         this.audioElement = document.createElement('audio')
         this.audioElement.src = album.songs[0].audioSrc
+    }
+
+    componentDidMount() {
+        this.audioElement.addEventListener('timeupdate', (e) => {
+            this.setState({
+                currentTime: this.audioElement.currentTime
+            })
+        })
+        this.audioElement.addEventListener('durationchange', (e) => {
+            this.setState({
+                duration: this.audioElement.duration
+            })
+        })
     }
 
     play() {
@@ -103,6 +118,8 @@ class Album extends Component {
                 <PlayerBar
                     isPlaying={this.state.isPlaying}
                     currentSong={this.state.currentSong}
+                    duration={this.state.duration}
+                    currentTime={this.state.currentTime}
                     handleSongClick={() => this.handleSongClick(this.state.currentSong)}
                     handlePreviousClick={() => this.handlePreviousClick()}
                     handleNextClick={() => this.handleNextClick()}
